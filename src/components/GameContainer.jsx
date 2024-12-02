@@ -77,8 +77,8 @@ export default function GameContainer() {
                     <PlayerInfo name="player1" symbol="X" isActive={activePlayer === 'X'} />
                     <PlayerInfo name="player2" symbol="O" isActive={activePlayer === 'O'} />
                 </ol>
-
                 {(checkWinner() !== 'draw' || !checkWinner()) && <GameBoard onSelectSquare={handleSelectSquare} gameBoard={gameBoard} />}
+                { gameTurn.length !== 0 && <Log curTurn={gameTurn} />}
                 {checkWinner() && <GameResult winner={checkWinner()} resetGame={resetGame}></GameResult>}
             </div>
             {checkWinner() !== null && <div id="winner">{checkWinner()} wins!</div>}
