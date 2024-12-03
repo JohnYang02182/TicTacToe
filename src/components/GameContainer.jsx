@@ -7,6 +7,10 @@ import { WINNING_COMBINATIONS } from '../../setting/winning-combinations';
 
 
 export default function GameContainer() {
+    const [player, setPlayer] = useState({
+        X : 'player1',
+        O : 'player2'
+    });
 
     const [gameTurn, setGameTurn] = useState([]);
     
@@ -18,11 +22,17 @@ export default function GameContainer() {
         [null, null, null]
     ];
 
-    let gameBoard = initialGameBoard;
+    let gameBoard = [...initialGameBoard.map(array => [...array])];
+    // let gameBoard = initialGameBoard;
+    // gameTurn.forEach(turn => {
+    //     gameBoard[turn.square.row][turn.square.col] = turn.player;
+    // });
 
-    gameTurn.forEach(turn => {
-        gameBoard[turn.square.row][turn.square.col] = turn.player;
-    })
+    for(const turn of gameTurn){
+        const {square, player} = turn;
+        const {row, col} = square;
+        gameBoard[row][col] = player;
+    }
 
     function checkWinner(){
         let winner = null;
@@ -30,7 +40,7 @@ export default function GameContainer() {
             const [a, b, c] = combination;
             const valFirst = gameBoard[a.row][a.column];
             if(valFirst && valFirst === gameBoard[b.row][b.column] && valFirst === gameBoard[c.row][c.column] && valFirst !== null){
-                winner = valFirst;
+                winner = player[valFirst];
             } else if(gameTurn.length === 9 && !winner){
                 winner = 'draw';
             }
@@ -46,18 +56,11 @@ export default function GameContainer() {
         return curActivePlayer;
     }
     function resetGame(){
-        gameBoard = initialGameBoard;
         setGameTurn([]);
     }
     function handleSelectSquare(rowIndex, colIndex){
-        if(checkWinner()!== null){
-            gameBoard = initialGameBoard;
-            setGameTurn([]);
-            return;
-        }
         setGameTurn((prevTurns) => {
             let curActivePlayer = deriveActivePlayer(gameTurn);
-
             const undateTurns = [{
                 square: {
                     row: rowIndex,
@@ -70,14 +73,24 @@ export default function GameContainer() {
         })
     }
 
+    function handlePlayerNameChange(symbol, name){
+        setPlayer((prevPlayer) => {
+            return {
+                ...prevPlayer,
+                [symbol]: name
+            }
+        })
+    }
+
     return (
         <>
             <div id="game-container">
                 <ol id='players'>
-                    <PlayerInfo name="player1" symbol="X" isActive={activePlayer === 'X'} />
-                    <PlayerInfo name="player2" symbol="O" isActive={activePlayer === 'O'} />
+                    <PlayerInfo name={player.X} symbol="X" isActive={activePlayer === 'X'} onChangeName={handlePlayerNameChange} />
+                    <PlayerInfo name={player.O} symbol="O" isActive={activePlayer === 'O'} onChangeName={handlePlayerNameChange} />
                 </ol>
-                {(checkWinner() !== 'draw' || !checkWinner()) && <GameBoard onSelectSquare={handleSelectSquare} gameBoard={gameBoard} />}
+                {/* {(checkWinner() !== 'draw' || !checkWinner()) && <GameBoard onSelectSquare={handleSelectSquare} gameBoard={gameBoard} />} */}
+                <GameBoard onSelectSquare={handleSelectSquare} gameBoard={gameBoard} />
                 <Log curTurn={gameTurn} />
                 {checkWinner() && <GameResult winner={checkWinner()} resetGame={resetGame}></GameResult>}
             </div>
