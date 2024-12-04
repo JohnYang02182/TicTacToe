@@ -22,17 +22,29 @@ export default function GameContainer() {
         [null, null, null]
     ];
 
-    let gameBoard = [...initialGameBoard.map(array => [...array])];
+    const gameBoard = deriveGameBoard(gameTurn);
+
+    function deriveGameBoard(gameTurns){
+        let gameBoard = [...initialGameBoard.map(array => [...array])];
+        for(const turn of gameTurns){
+            const {square, player} = turn;
+            const {row, col} = square;
+            gameBoard[row][col] = player;
+        }
+        return gameBoard;
+    }
+
+    // let gameBoard = [...initialGameBoard.map(array => [...array])];
     // let gameBoard = initialGameBoard;
     // gameTurn.forEach(turn => {
     //     gameBoard[turn.square.row][turn.square.col] = turn.player;
     // });
 
-    for(const turn of gameTurn){
-        const {square, player} = turn;
-        const {row, col} = square;
-        gameBoard[row][col] = player;
-    }
+    // for(const turn of gameTurn){
+    //     const {square, player} = turn;
+    //     const {row, col} = square;
+    //     gameBoard[row][col] = player;
+    // }
 
     function checkWinner(){
         let winner = null;
