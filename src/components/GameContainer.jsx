@@ -104,9 +104,9 @@ export default function GameContainer() {
                 {/* {(checkWinner() !== 'draw' || !checkWinner()) && <GameBoard onSelectSquare={handleSelectSquare} gameBoard={gameBoard} />} */}
                 <GameBoard onSelectSquare={handleSelectSquare} gameBoard={gameBoard} />
                 <Log curTurn={gameTurn} />
-                {checkWinner() && <GameResult winner={checkWinner()} resetGame={resetGame}></GameResult>}
+                {checkWinner() && <GameResult winner={checkWinner} resetGame={resetGame}></GameResult>}
             </div>
-            {checkWinner() !== null && <div id="winner">{checkWinner()} wins!</div>}
+            {checkWinner() !== null && <div id="winner">{checkWinner} wins!</div>}
         </>
     )
 }
